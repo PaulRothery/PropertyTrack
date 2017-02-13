@@ -1,0 +1,39 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util-4.2.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	
+	<context:property-placeholder location="classpath:propertyTrack.properties" />
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
+			
+	<bean id="apiHandler" class="com.paul.ApiHandler">
+		<property name="restTemplate" ref="restTemplate"></property>
+		<property name="url" value="${url}"></property>
+	</bean>
+
+	<bean id="propertyParser" class="com.paul.PropertyParser">
+	</bean>
+
+	<bean id="propertySummary" class="com.paul.PropertySummary">
+	</bean>
+
+	<bean id="checkValue" class="com.paul.CheckValue">
+		<property name="apiHandler" ref="apiHandler"></property>
+		<property name="propertyParser" ref="propertyParser"></property>
+		<property name="propertySummary" ref="propertySummary"></property>
+	    <property name="propertyIdList" value="#{'${property.ids}'.split(',')}"></property>	
+	</bean>
+
+</beans>
