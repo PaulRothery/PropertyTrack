@@ -1,3 +1,0 @@
-#!/bin/sh
-cd /Users/paulrothery/develop/spring-workspace/PropertyTrack/deploy
-java -cp Property-Track.jar com.paul.Main
