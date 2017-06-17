@@ -20,6 +20,8 @@ import org.xml.sax.InputSource;
  */
 public class PropertyParser {
 
+	final static String ERROR_500 = "500";
+	
 	public Map<String,String> processDetails(String propertyDetails) {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -35,12 +37,43 @@ public class PropertyParser {
 		
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
+		
+		/*first check and ensure there is no error from the API call, 
+		 * e.g. invalid ZSWID
+		 */
+		checkForError(document, xpath);
+		
+		// if we're ok then get the address and value
 		String address = getAddress(document, xpath);
 		String value = getValue(document, xpath);
-		  
+		
 		Map<String,String> summary = new HashMap<String,String>();
 		summary.put(address, value);
 		return summary;
+	}
+
+	private void checkForError(Document document, XPath xpath) {
+		
+		/* an error code of 500 is an error with an invalid SZWID
+		 * report the text and exit
+		 */
+		try {
+			String returnCode = null;
+			String expr = "//message//code";
+			NodeList nodes = (NodeList) xpath.compile(expr).evaluate(document, XPathConstants.NODESET);
+			returnCode = nodes.item(0).getTextContent();
+			if (returnCode.equals(ERROR_500)) {
+				String returnText = null;
+				expr = "//message//text";
+				nodes = (NodeList) xpath.compile(expr).evaluate(document, XPathConstants.NODESET);
+				returnText = nodes.item(0).getTextContent();
+				System.out.println("Error on API call to Zillow: code = " + returnCode + ", message = " + returnText + " - Check propertyTrack.properties file");	
+				System.exit(0);
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private String getAddress(Document document, XPath xpath) {

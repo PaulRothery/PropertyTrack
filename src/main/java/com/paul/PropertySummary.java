@@ -30,8 +30,6 @@ public class PropertySummary {
 			
 			totalValue += value;
 		    System.out.format("%-20s %13s\n", entry.getKey(), formatAmount(value));
-		    
-		    
 		}
 
 		System.out.format("%-20s %s\n", " ", "-------------");

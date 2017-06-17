@@ -56,7 +56,6 @@ public class CheckValue {
 		
 		for (String propertyId : propertyIdList) {
 			String propertyDetails = apiHandler.getDetails(propertyId);
-			
 			propertySummary.setSummary(propertyParser.processDetails(propertyDetails));
 		}
 		propertySummary.report();
